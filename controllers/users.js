@@ -57,8 +57,8 @@ class UserController {
   //   });
   // });
 
-  getUserAccount() {}
-  updateUserAccount() {}
+  // getUserAccount() {}
+  // updateUserAccount() {}
 }
 
 module.exports = UserController;

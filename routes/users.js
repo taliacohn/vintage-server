@@ -2,7 +2,7 @@ require("dotenv").config;
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/users");
-const userDB = require("../database/userDB");
+
 const controller = new userController();
 
 const cookieParser = require("cookie-parser"); // parse all the cookies we have
@@ -24,10 +24,12 @@ router.post("/signup", (req, res) => {
   controller.signUp(req, res);
 });
 
-router.post("/login", (req, res, next) => {
+router.post("/login", (req, res) => {
   console.log("got it");
   controller.login(req, res);
 });
+
+module.exports = router;
 
 //router.post("/login", (req, res) => {
 //   const email = req.body.email;
@@ -239,5 +241,3 @@ router.post("/login", (req, res, next) => {
 //     res.send(result);
 //   });
 // });
-
-module.exports = router;

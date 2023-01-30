@@ -18,7 +18,7 @@ const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 
 const app = express();
-const port = process.env.PORT || 3001;
+//const port = process.env.PORT || 3001;
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -61,8 +61,8 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-app.listen(port, () => {
-  console.log(`running server on ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`running server on ${port}`);
+// });
 
 module.exports = app;

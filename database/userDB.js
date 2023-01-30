@@ -1,7 +1,7 @@
+const pool = require("./db-connection");
+
 const bcrypt = require("bcrypt");
 const saltRound = 10;
-
-const db = require("./db-connection");
 
 exports.signUp = (firstName, lastName, password, email) => {
   bcrypt.hash(password, saltRound, async (err, hash) => {
@@ -15,24 +15,53 @@ exports.signUp = (firstName, lastName, password, email) => {
 };
 
 exports.login = async (email, password) => {
-  const [rows, fields] = await db.execute(
-    `SELECT * FROM user WHERE email = ?`,
-    [email],
-    (err, result) => {
-      if (err) result.send({ err });
-      if (result.length) {
-        bcrypt.compare(password, result[0].password, (error, response) => {
-          if (response) {
-            console.log("response: " + response);
-            req.session.user = result[0];
-            console.log("req.session.user: " + req.session.user);
-          }
-        });
-      }
+  try {
+    const connection = await pool.getConnection();
+
+    // check if username exists
+    const [rows] = await connection.query(
+      `SELECT * FROM user WHERE email = ?`,
+      [email]
+    );
+    if (rows.length === 0) {
+      console.log("User not found");
+      return "User not found";
     }
-  );
-  return await rows;
+
+    // compare password with hased password
+    const isValid = await bcrypt.compare(password, rows[0].password);
+
+    if (isValid) {
+      console.log("Successful login");
+      return true;
+    } else {
+      console.log("Incorrect password");
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 };
+//       (err, result) => {
+//         if (err) result.send({ err });
+//         if (result.length) {
+//           bcrypt.compare(password, result[0].password, (error, response) => {
+//             if (response) {
+//               console.log("response: " + response);
+//               req.session.user = result[0];
+//               console.log("req.session.user: " + req.session.user);
+//             }
+//           });
+//         }
+//       }
+//     );
+//     console.log(rows);
+//     connection.release();
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 // exports.updateUser = (firstName, lastName, mainImg, userId) => {
 //   return new Promise((resolve, reject) => {

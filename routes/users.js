@@ -15,18 +15,26 @@ router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
-router.get("/login", (req, res) => {
-  if (req.session.user) res.send({ loggedIn: true, user: req.session.user });
-  else res.send({ loggedIn: false });
-});
+// router.get("/login", (req, res) => {
+//   if (req.session.user) res.send({ loggedIn: true, user: req.session.user });
+//   else res.send({ loggedIn: false });
+// });
 
 router.post("/signup", (req, res) => {
   controller.signUp(req, res);
 });
 
 router.post("/login", (req, res) => {
-  console.log("got it");
-  controller.login(req, res);
+  controller
+    .login(req, res)
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json(err);
+    });
 });
 
 module.exports = router;

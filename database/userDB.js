@@ -14,35 +14,53 @@ exports.signUp = (firstName, lastName, password, email) => {
   });
 };
 
-exports.login = async (email, password) => {
-  try {
+exports.login = (email, password) => {
+  return new Promise(async (resolve, reject) => {
     const connection = await pool.getConnection();
-
-    // check if username exists
     const [rows] = await connection.query(
       `SELECT * FROM user WHERE email = ?`,
       [email]
     );
-    if (rows.length === 0) {
-      console.log("User not found");
-      return "User not found";
-    }
-
-    // compare password with hased password
-    const isValid = await bcrypt.compare(password, rows[0].password);
-
-    if (isValid) {
-      console.log("Successful login");
-      return true;
-    } else {
-      console.log("Incorrect password");
-      return false;
-    }
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+    if (rows.length) {
+      const response = await bcrypt.compare(password, rows[0].password);
+      if (response) {
+        result = JSON.stringify(rows[0]);
+        console.log("Successful login");
+        resolve({ loggedIn: true, user: result });
+      } else reject({ message: "Incorrect Password" });
+    } else reject({ message: "User Not Found" });
+  });
 };
+//   try {
+//     const connection = await pool.getConnection();
+
+//     // check if username exists
+//     const [rows] = await connection.query(
+//       `SELECT * FROM user WHERE email = ?`,
+//       [email]
+//     );
+//     if (rows.length === 0) {
+//       console.log("User not found");
+//       rej({ loggedIn: false, message: "User not found" });
+//     }
+
+//     // compare password with hased password
+//     const isValid = await bcrypt.compare(password, rows[0].password);
+
+//     if (isValid) {
+//       result = JSON.stringify(rows[0]);
+//       console.log("Successful login");
+//       res({ loggedIn: true, user: result });
+//     } else {
+//       console.log("Incorrect password");
+//       rej({ loggedIn: false, message: "Incorrect password" });
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     return false;
+//   }
+// };
+
 //       (err, result) => {
 //         if (err) result.send({ err });
 //         if (result.length) {

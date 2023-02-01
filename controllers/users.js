@@ -23,10 +23,69 @@ class UserController {
   }
 
   async login(req, res) {
-    const { email, password } = req.body;
-    const result = await userDB.login(email, password);
-    console.log("login result:" + result);
+    return new Promise((resolve, reject) => {
+      const { email, password } = req.body;
+      userDB
+        .login(email, password)
+        .then((result) => {
+          console.log(result);
+          if (result.user) {
+            const user = JSON.parse(result.user);
+            console.log(user);
+            req.session.user = {
+              id: user.id,
+              email: user.email,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              streetNumber: user.streetNumber || "",
+              streetNumber: user.streetNumber || "",
+              city: user.city || "",
+              postalCode: user.postalCode || "",
+              country: user.country || "",
+              phoneNumber: user.phoneNumber || "",
+              mainImg: user.mainIMG || "",
+            };
+            resolve({ loggedIn: true, user: req.session.user });
+
+            console.log(result.loggedIn);
+          } else {
+            console.log("result.message is: " + result.message);
+            reject({ loggedIn: false, message: `${result.message}` });
+          }
+        })
+        .catch((err) => {
+          console.log(err.message);
+          reject({ loggedIn: false, message: err.message });
+        });
+    });
   }
+
+  //     const result = await userDB.login(email, password);
+  //     console.log(result);
+  //     if (result.user) {
+  //       const user = JSON.parse(result.user);
+  //       console.log(user);
+  //       req.session.user = {
+  //         id: user.id,
+  //         email: user.email,
+  //         firstName: user.firstName,
+  //         lastName: user.lastName,
+  //         streetNumber: user.streetNumber || "",
+  //         streetNumber: user.streetNumber || "",
+  //         city: user.city || "",
+  //         postalCode: user.postalCode || "",
+  //         country: user.country || "",
+  //         phoneNumber: user.phoneNumber || "",
+  //         mainImg: user.mainIMG || "",
+  //       };
+  //       resolve({ loggedIn: true, user: req.session.user });
+
+  //       console.log(result.loggedIn);
+  //     } else {
+  //       reject({ loggedIn: false, message: `${result.message}` });
+  //     }
+  //   })
+  // }
 
   //   const email = req.body.email;
   //   const password = req.body.password;

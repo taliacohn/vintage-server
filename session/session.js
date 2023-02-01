@@ -7,7 +7,7 @@ const session = expressSession({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    expires: process.env.ONEDAY,
+    expires: Number(process.env.ONEDAY),
   },
 });
 

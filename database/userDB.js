@@ -31,55 +31,48 @@ exports.login = (email, password) => {
     } else reject({ message: "User Not Found" });
   });
 };
-//   try {
-//     const connection = await pool.getConnection();
 
-//     // check if username exists
-//     const [rows] = await connection.query(
-//       `SELECT * FROM user WHERE email = ?`,
-//       [email]
-//     );
-//     if (rows.length === 0) {
-//       console.log("User not found");
-//       rej({ loggedIn: false, message: "User not found" });
-//     }
-
-//     // compare password with hased password
-//     const isValid = await bcrypt.compare(password, rows[0].password);
-
-//     if (isValid) {
-//       result = JSON.stringify(rows[0]);
-//       console.log("Successful login");
-//       res({ loggedIn: true, user: result });
-//     } else {
-//       console.log("Incorrect password");
-//       rej({ loggedIn: false, message: "Incorrect password" });
-//     }
-//   } catch (err) {
-//     console.log(err);
-//     return false;
-//   }
-// };
-
-//       (err, result) => {
-//         if (err) result.send({ err });
-//         if (result.length) {
-//           bcrypt.compare(password, result[0].password, (error, response) => {
-//             if (response) {
-//               console.log("response: " + response);
-//               req.session.user = result[0];
-//               console.log("req.session.user: " + req.session.user);
-//             }
-//           });
-//         }
-//       }
-//     );
-//     console.log(rows);
-//     connection.release();
-//   } catch (err) {
-//     console.log(err);
-//   }
-// };
+exports.updateInfo = (
+  userId,
+  firstName,
+  lastName,
+  mainImg,
+  streetName,
+  streetNumber,
+  city,
+  country,
+  postalCode
+) => {
+  return new Promise(async (resolve, reject) => {
+    const connection = await pool.getConnection();
+    if (connection) {
+      console.log("connected");
+    }
+    connection
+      .query(
+        `UPDATE user SET firstName = ?, lastName = ?, mainIMG = ?, streetNumber = ?, streetName = ?, city = ?, country = ?, postalCode = ? WHERE id = ?;`,
+        [
+          firstName,
+          lastName,
+          mainImg,
+          streetNumber,
+          streetName,
+          city,
+          country,
+          postalCode,
+          userId,
+        ]
+      )
+      .then((result) => {
+        console.log(result);
+        resolve(result);
+      })
+      .catch((error) => {
+        console.log(error);
+        reject({ err });
+      });
+  });
+};
 
 // exports.updateUser = (firstName, lastName, mainImg, userId) => {
 //   return new Promise((resolve, reject) => {

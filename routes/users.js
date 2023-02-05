@@ -37,6 +37,25 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.post("/logout", (req, res) => {
+  res.clearCookie("userId").send();
+  req.session.user = "";
+});
+
+router.post("/:id", (req, res) => {
+  console.log("got the request");
+  controller
+    .editUserInfo(req, res)
+    .then((result) => {
+      console.log("User information updated");
+      res.status(200).json({ status: 200, result });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json({ status: 404, error: err });
+    });
+});
+
 module.exports = router;
 
 //router.post("/login", (req, res) => {

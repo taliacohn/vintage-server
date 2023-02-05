@@ -60,6 +60,44 @@ class UserController {
     });
   }
 
+  editUserInfo(req, res) {
+    return new Promise((resolve, reject) => {
+      console.log("now in controllers");
+      const { userId } = req.params;
+      const {
+        firstName,
+        lastName,
+        mainImg,
+        streetNumber,
+        streetName,
+        city,
+        country,
+        postalCode,
+      } = req.body;
+      userDB
+        .updateInfo(
+          userId,
+          firstName,
+          lastName,
+          mainImg,
+          streetNumber,
+          streetName,
+          city,
+          country,
+          postalCode
+        )
+        .then((result) => {
+          console.log(result);
+          console.log("updating info");
+          resolve({ result: result });
+        })
+        .catch((error) => {
+          console.log(error.message);
+          console.log(error);
+          reject({ error: error });
+        });
+    });
+  }
   //     const result = await userDB.login(email, password);
   //     console.log(result);
   //     if (result.user) {

@@ -3,14 +3,28 @@ const pool = require("./db-connection");
 const bcrypt = require("bcrypt");
 const saltRound = 10;
 
-exports.signUp = (firstName, lastName, password, email) => {
-  bcrypt.hash(password, saltRound, async (err, hash) => {
-    if (err) console.log(err);
-    const [rows, fields] = await db.execute(
-      `INSERT INTO user (firstName, lastName, password, email) VALUES (?, ?, ?, ?)`,
-      [firstName, lastName, password, email]
-    );
-    return await rows[0];
+exports.signUp = (firstName, lastName, email, password) => {
+  return new Promise(async (resolve, reject) => {
+    bcrypt.hash(password, saltRound, async (err, hash) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      } else {
+        const connection = await pool.getConnection();
+        try {
+          const [rows] = await connection.query(
+            `INSERT INTO user (firstName, lastName, email, password) VALUES (?, ?, ?, ?)`,
+            [firstName, lastName, email, hash]
+          );
+          resolve({ message: "Successful Sign Up" });
+        } catch (error) {
+          console.log(error);
+          reject({ message: "Sign Up Failed" });
+        } finally {
+          connection.release();
+        }
+      }
+    });
   });
 };
 
@@ -29,6 +43,7 @@ exports.login = (email, password) => {
         resolve({ loggedIn: true, user: result });
       } else reject({ message: "Incorrect Password" });
     } else reject({ message: "User Not Found" });
+    connection.release();
   });
 };
 
@@ -71,6 +86,7 @@ exports.updateInfo = (
         console.log(error);
         reject({ err });
       });
+    connection.release();
   });
 };
 

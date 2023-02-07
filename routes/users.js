@@ -21,7 +21,16 @@ router.get("/", function (req, res, next) {
 // });
 
 router.post("/signup", (req, res) => {
-  controller.signUp(req, res);
+  controller
+    .signUp(req, res)
+    .then((result) => {
+      console.log(result);
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(404).json(err);
+    });
 });
 
 router.post("/login", (req, res) => {
@@ -57,58 +66,6 @@ router.post("/:id", (req, res) => {
 });
 
 module.exports = router;
-
-//router.post("/login", (req, res) => {
-//   const email = req.body.email;
-//   const password = req.body.password;
-
-//   db.query(`SELECT * FROM user WHERE email = ?`, [email], (err, result) => {
-//     if (err) {
-//       res.send({ err: err });
-//     }
-
-//     if (result.length > 0) {
-//       bcrypt.compare(password, result[0].password, (error, response) => {
-//         console.log(result);
-//         console.log(req.session);
-//         if (response) {
-//           req.session.user = result[0];
-//           console.log(req.session.user);
-//           user = req.session.user;
-//           sessionEmail = req.session.user.email;
-//           res.send(req.session.user);
-//         } else {
-//           res.send({ message: "Wrong username/password combination! " });
-//         }
-//       });
-//       //res.send(result); // send to front end
-//     } else {
-//       res.send({ message: "User doesn't exist" });
-//     }
-//   });
-// });
-
-// router.post("/signup", (req, res) => {
-//   const firstName = req.body.firstName;
-//   const lastName = req.body.lastName;
-//   const password = req.body.password;
-//   const email = req.body.email;
-
-//   bcrypt.hash(password, saltRounds, (err, hash) => {
-//     if (err) {
-//       console.log(err);
-//     }
-//     db.query(
-//       `INSERT INTO user (firstName, lastName, password, email) VALUES("${firstName}", "${lastName}", "${hash}", "${email}")`,
-//       (err, result) => {
-//         if (err) {
-//           res.send(err);
-//         }
-//         res.send(result);
-//       }
-//     );
-//   });
-// });
 
 // router.get("/isLoggedIn", (req, res) => {
 //   if (req.session.user) {

@@ -7,22 +7,23 @@ const userDB = require("../database/userDB");
 // router.use(express.json());
 
 class UserController {
-  async signUp(req, res) {
-    const { firstName, lastName, password, email } = req.body;
-    const result = await userDB.signUp(firstName, lastName, password, email);
-    if (result.id) {
-      res.status(201).json({
-        //successful
-        message: "User created",
-      });
-    } else {
-      res.status(404).json({
-        message: "Did not create user",
-      });
-    }
+  signUp(req, res) {
+    return new Promise((resolve, reject) => {
+      console.log(req.body);
+      const { firstName, lastName, email, password } = req.body;
+      userDB
+        .signUp(firstName, lastName, email, password)
+        .then((result) => {
+          console.log(result);
+          resolve(result);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
   }
 
-  async login(req, res) {
+  login(req, res) {
     return new Promise((resolve, reject) => {
       const { email, password } = req.body;
       userDB
@@ -38,7 +39,7 @@ class UserController {
               firstName: user.firstName,
               lastName: user.lastName,
               streetNumber: user.streetNumber || "",
-              streetNumber: user.streetNumber || "",
+              streetName: user.streetName || "",
               city: user.city || "",
               postalCode: user.postalCode || "",
               country: user.country || "",

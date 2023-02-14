@@ -1,4 +1,4 @@
-const userDB = require("../database/userDB");
+const userDB = require("../database/user");
 // const express = require("express");
 // const router = express.Router();
 
@@ -63,7 +63,7 @@ class UserController {
   editUserInfo(req, res) {
     return new Promise((resolve, reject) => {
       console.log("now in controllers");
-      const { userId } = req.params;
+      const userId = req.params;
       const {
         firstName,
         lastName,
@@ -74,9 +74,10 @@ class UserController {
         country,
         postalCode,
       } = req.body;
+      console.log("userId: " + userId.id);
       userDB
         .updateInfo(
-          userId,
+          userId.id,
           firstName,
           lastName,
           mainImg,

@@ -37,8 +37,8 @@ exports.updateInfo = (
   firstName,
   lastName,
   mainImg,
-  streetName,
   streetNumber,
+  streetName,
   city,
   country,
   postalCode
@@ -48,6 +48,18 @@ exports.updateInfo = (
     if (connection) {
       console.log("connected");
     }
+    console.log(
+      userId,
+      firstName,
+      lastName,
+      mainImg,
+      streetName,
+      streetNumber,
+      city,
+      country,
+      postalCode
+    );
+    console.log(streetNumber);
     connection
       .query(
         `UPDATE user SET firstName = ?, lastName = ?, mainIMG = ?, streetNumber = ?, streetName = ?, city = ?, country = ?, postalCode = ? WHERE id = ?;`,
@@ -73,66 +85,3 @@ exports.updateInfo = (
       });
   });
 };
-
-// exports.updateUser = (firstName, lastName, mainImg, userId) => {
-//   return new Promise((resolve, reject) => {
-//     connection.query(
-//       `UPDATE user SET firstName = "${firstName}", lastName = "${lastName}", mainIMG = "${mainImg}" WHERE id = ${userId};`,
-//       (error) => {
-//         if (error) {
-//           return reject(error);
-//         }
-//         return resolve();
-//       }
-//     );
-//   });
-// };
-
-// router.updateAddress = (
-//   streetNumber,
-//   streetName,
-//   city,
-//   country,
-//   postalCode,
-//   userId
-// ) => {
-//   return new Promise((resolve, reject) => {
-//     connection.query(
-//       `INSERT into address (number, street, city, country, postalCode, userID) VALUES (${streetNumber}, "${streetName}", "${city}", "${country}", "${postalCode}", ${user.id});`,
-//       (error) => {
-//         if (error) {
-//           return reject(error);
-//         }
-//         return resolve();
-//       }
-//     );
-//   });
-// };
-
-// router.getAddressId = (userId) => {
-//   return new Promise((resolve, reject) => {
-//     connection.query(
-//       `SELECT id from address where userID = ${userId}`,
-//       (error, elements) => {
-//         if (error) {
-//           return reject(error);
-//         }
-//         return resolve(elements);
-//       }
-//     );
-//   });
-// };
-
-// router.updateAddressId = (resultId, userId) => {
-//   connection.query(
-//     `UPDATE user SET addressID = ${resultId} WHERE id=${userId};`,
-//     (error) => {
-//       if (error) {
-//         return reject(error);
-//       }
-//       return resolve();
-//     }
-//   );
-// };
-
-// module.exports = router;

@@ -65,12 +65,27 @@ exports.getOneProduct = (id) => {
   });
 };
 
-exports.searchResults = (searchQuery) => {
+exports.getSearchProducts = (searchTerm) => {
+  console.log("in the db");
   return new Promise(async (resolve, reject) => {
     const connection = await pool.getConnection();
+    const likeSearchTerm = `%${searchTerm}%`;
+    console.log(likeSearchTerm);
+    console.log("before the query");
     const [rows] = await connection.query(
-      `SELECT * FROM products WHERE name LIKE '%?%'`,
-      [searchQuery]
+      `SELECT p.id, p.name, p.price, MAX(i.imgURL) as imgURL
+    FROM product p 
+    JOIN product_image i ON p.id = i.productID
+    JOIN product_category c ON p.categoryID = c.id
+    WHERE p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?
+    GROUP by p.id, p.name, p.price`,
+      [likeSearchTerm, likeSearchTerm, likeSearchTerm]
     );
+    if (rows.length) {
+      resolve(rows);
+    } else {
+      reject(new Error("No products found"));
+    }
+    connection.release();
   });
 };

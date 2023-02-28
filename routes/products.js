@@ -42,4 +42,15 @@ router.get("/product/:id", (req, res) => {
     });
 });
 
+router.post("/search", (req, res) => {
+  controller
+    .searchProducts(req, res)
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(404).json(err);
+    });
+});
+
 module.exports = router;

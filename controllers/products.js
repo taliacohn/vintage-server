@@ -40,6 +40,24 @@ class ProductController {
         });
     });
   }
+
+  async searchProducts(req, res) {
+    return new Promise((resolve, reject) => {
+      console.log(req.body);
+      const { searchQuery } = req.body;
+      console.log(searchQuery);
+      productsDB
+        .getSearchProducts(searchQuery)
+        .then((result) => {
+          console.log(result);
+          resolve(result);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
 }
 
 module.exports = ProductController;

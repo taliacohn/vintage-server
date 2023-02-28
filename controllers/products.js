@@ -1,3 +1,4 @@
+const { resolve } = require("path");
 const productsDB = require("../database/products");
 // const express = require("express");
 // const router = express.Router();
@@ -13,6 +14,22 @@ class ProductController {
       const { category } = req.params;
       productsDB
         .getProducts(category)
+        .then((result) => {
+          console.log(result);
+          resolve(result);
+        })
+        .catch((error) => {
+          console.log(error);
+          reject(error);
+        });
+    });
+  }
+
+  async getOneProduct(req, res) {
+    return new Promise((resolve, reject) => {
+      const { id } = req.params;
+      productsDB
+        .getOneProduct(id)
         .then((result) => {
           console.log(result);
           resolve(result);

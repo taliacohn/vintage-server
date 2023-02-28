@@ -6,10 +6,12 @@ const saltRound = 10;
 exports.signUp = (firstName, lastName, password, email) => {
   bcrypt.hash(password, saltRound, async (err, hash) => {
     if (err) console.log(err);
-    const [rows, fields] = await db.execute(
+    const connection = await pool.getConnection();
+    const [rows, fields] = await connection.execute(
       `INSERT INTO user (firstName, lastName, password, email) VALUES (?, ?, ?, ?)`,
       [firstName, lastName, password, email]
     );
+    connection.release();
     return await rows[0];
   });
 };
@@ -21,6 +23,7 @@ exports.login = (email, password) => {
       `SELECT * FROM user WHERE email = ?`,
       [email]
     );
+    connection.release();
     if (rows.length) {
       const response = await bcrypt.compare(password, rows[0].password);
       if (response) {
@@ -77,10 +80,12 @@ exports.updateInfo = (
       )
       .then((result) => {
         console.log(result);
+        connection.release();
         resolve(result);
       })
       .catch((error) => {
         console.log(error);
+        connection.release();
         reject({ err });
       });
   });

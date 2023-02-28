@@ -31,6 +31,40 @@ exports.getProducts = (category) => {
   });
 };
 
+exports.getOneProduct = (id) => {
+  return new Promise(async (resolve, reject) => {
+    const connection = await pool.getConnection();
+    const [rows] = await connection.query(
+      `SELECT p.id, p.name, p.price, p.description, i.imgURL
+        FROM product p
+        JOIN product_image i ON p.id = i.productID
+        WHERE p.id = ?`,
+      [id]
+    );
+    if (rows.length) {
+      const products = {};
+      rows.forEach((row) => {
+        if (!products[row.id]) {
+          products[row.id] = {
+            id: row.id,
+            name: row.name,
+            price: row.price,
+            description: row.description,
+            imgURLs: [],
+          };
+        }
+        products[row.id].imgURLs.push(row.imgURL);
+      });
+      const product = Object.values(products)[0];
+      console.log("product in database " + product);
+      resolve(product);
+    } else {
+      reject(new Error("No product found"));
+    }
+    connection.release();
+  });
+};
+
 exports.searchResults = (searchQuery) => {
   return new Promise(async (resolve, reject) => {
     const connection = await pool.getConnection();

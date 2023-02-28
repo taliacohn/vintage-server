@@ -17,6 +17,8 @@ const cors = require("cors");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const productsRouter = require("./routes/products");
+const cartRouter = require("./routes/cart");
+const wishlistRouter = require("./routes/wishlist");
 
 const app = express();
 //const port = process.env.PORT || 3001;
@@ -46,6 +48,8 @@ app.use(session);
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/products", productsRouter);
+app.use("/cart", cartRouter);
+app.use("/wishlist", wishlistRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

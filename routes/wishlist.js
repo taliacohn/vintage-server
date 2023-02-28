@@ -1,9 +1,9 @@
 require("dotenv").config;
 const express = require("express");
 const router = express.Router();
-const productController = require("../controllers/products");
+const wishlistController = require("../controllers/wishlist");
 
-const controller = new productController();
+const controller = new wishlistController();
 
 const cookieParser = require("cookie-parser"); // parse all the cookies we have
 
@@ -15,31 +15,25 @@ router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
-router.get("/:category", (req, res) => {
+router.post("/:productID/:userID", (req, res) => {
+  console.log("made it to routes");
+  controller.addToWishlist(req, res);
+});
+
+router.get("/:userID", (req, res) => {
   console.log("made it to routes");
   controller
-    .getProducts(req, res)
+    .getWishlist(req, res)
     .then((result) => {
-      console.log("result: " + result);
       res.status(200).json(result);
     })
     .catch((err) => {
-      console.log("error: " + err);
       res.status(404).json(err);
     });
 });
 
-router.get("/product/:id", (req, res) => {
-  controller
-    .getOneProduct(req, res)
-    .then((result) => {
-      console.log("result: " + result);
-      res.status(200).json(result);
-    })
-    .catch((err) => {
-      console.log("error: " + err);
-      res.status(404).json(err);
-    });
+router.delete("/:productID/:userID", (req, res) => {
+  controller.deleteFromWishlist(req, res);
 });
 
 module.exports = router;

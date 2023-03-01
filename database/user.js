@@ -3,16 +3,23 @@ const pool = require("./db-connection");
 const bcrypt = require("bcrypt");
 const saltRound = 10;
 
-exports.signUp = (firstName, lastName, password, email) => {
-  bcrypt.hash(password, saltRound, async (err, hash) => {
-    if (err) console.log(err);
-    const connection = await pool.getConnection();
-    const [rows, fields] = await connection.execute(
-      `INSERT INTO user (firstName, lastName, password, email) VALUES (?, ?, ?, ?)`,
-      [firstName, lastName, password, email]
-    );
-    connection.release();
-    return await rows[0];
+exports.signUp = async (firstName, lastName, password, email) => {
+  return new Promise(async (resolve, reject) => {
+    bcrypt.hash(password, saltRound, async (err, hash) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+        return;
+      }
+      const connection = await pool.getConnection();
+      const [result] = await connection.execute(
+        `INSERT INTO user (firstName, lastName, password, email) VALUES (?, ?, ?, ?)`,
+        [firstName, lastName, hash, email]
+      );
+      connection.release();
+      console.log(result);
+      resolve({ id: result.insertId });
+    });
   });
 };
 
@@ -29,6 +36,7 @@ exports.login = (email, password) => {
       if (response) {
         result = JSON.stringify(rows[0]);
         console.log("Successful login");
+        console.log(result);
         resolve({ loggedIn: true, user: result });
       } else reject({ message: "Incorrect Password" });
     } else reject({ message: "User Not Found" });

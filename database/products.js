@@ -69,7 +69,7 @@ exports.getSearchProducts = (searchTerm) => {
   console.log("in the db");
   return new Promise(async (resolve, reject) => {
     const connection = await pool.getConnection();
-    const likeSearchTerm = `%${searchTerm}%`;
+    const likeSearchTerm = `\\b${searchTerm}\\b`;
     console.log(likeSearchTerm);
     console.log("before the query");
     const [rows] = await connection.query(
@@ -77,7 +77,7 @@ exports.getSearchProducts = (searchTerm) => {
     FROM product p 
     JOIN product_image i ON p.id = i.productID
     JOIN product_category c ON p.categoryID = c.id
-    WHERE p.name LIKE ? OR p.description LIKE ? OR c.name LIKE ?
+    WHERE p.name REGEXP ? OR p.description REGEXP ? OR c.name REGEXP ?
     GROUP by p.id, p.name, p.price`,
       [likeSearchTerm, likeSearchTerm, likeSearchTerm]
     );

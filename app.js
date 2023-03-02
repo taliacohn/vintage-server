@@ -45,7 +45,7 @@ app.use(morgan('short'));
 
 app.use(
   cors({
-    origin: ['http://localhost:3000'],
+    origin: ['https://vintage-front.onrender.com/'],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
   })

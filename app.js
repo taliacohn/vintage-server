@@ -59,6 +59,11 @@ app.use('/cart', cartRouter);
 app.use('/wishlist', wishlistRouter);
 app.use('/forgot-password', forgotPasswordRouter);
 
+app.get('/', (req, res) => {
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.send('API is running...');
+});
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

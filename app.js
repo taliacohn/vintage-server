@@ -45,7 +45,7 @@ app.use(morgan('short'));
 
 app.use(
   cors({
-    origin: ['https://vintage-front.onrender.com/'],
+    origin: ['https://second-love-store.onrender.com/'],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
   })

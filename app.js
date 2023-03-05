@@ -45,7 +45,7 @@ app.use(morgan('short'));
 
 app.use(
   cors({
-    origin: ['https://second-love-store.onrender.com/'],
+    origin: ['http://localhost:3000'],
     methods: ['GET', 'POST', 'DELETE', 'PUT'],
     credentials: true,
   })
